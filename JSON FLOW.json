@@ -1,0 +1,316 @@
+[
+    {
+        "id": "5e5e8b8b.c37bc4",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "7ad5be0a.4829f",
+        "type": "function",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "PreToken",
+        "func": "global.set(\"id\",msg.payload.id)\nglobal.set(\"sn\",msg.payload.sn)\nglobal.set(\"cs\",msg.payload.cs)\nglobal.set(\"lo\",msg.payload.lo)\nglobal.set(\"ge\",msg.payload.ge)\nglobal.set(\"ag\",msg.payload.ag)\nglobal.set(\"te\",msg.payload.te)\nglobal.set(\"ba\",msg.payload.ba)\nglobal.set(\"np\",msg.payload.np)\nglobal.set(\"cc\",msg.payload.cc)\nglobal.set(\"am\",msg.payload.am)\nglobal.set(\"sa\",msg.payload.sa)\nvar apikey= \"9l6JC3Y30z7aBLkMMXG6YXHU5tFGFjvjGqnaxFy2c2fL\";\nmsg.headers={\"content-type\":\"application/x-www-form-urlencoded\"}\nmsg.payload={\"grant_type\":\"urn:ibm:params:oauth:grant-type:apikey\",\"apikey\":apikey}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "b49b42f7.eefac"
+            ]
+        ]
+    },
+    {
+        "id": "b49b42f7.eefac",
+        "type": "http request",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://iam.cloud.ibm.com/identity/token",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 310,
+        "y": 240,
+        "wires": [
+            [
+                "69763c57.1755a4"
+            ]
+        ]
+    },
+    {
+        "id": "f6ad3a71.d095c8",
+        "type": "debug",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "69763c57.1755a4",
+        "type": "function",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "Pre Prediction",
+        "func": "var rn = global.get('rn')\nvar id = global.get('id')\nvar sn = global.get('sn')\nvar cs = global.get('cs')\nvar lo = global.get('lo')\nvar ge = global.get('ge')\nvar ag = global.get('ag')\nvar te = global.get('te')\nvar ba = global.get('ba')\nvar np = global.get('np')\nvar cc = global.get('cc')\nvar am = global.get('am')\nvar sa = global.get('sa')\nvar token=msg.payload.access_token\nvar instance_id=\"d5fa10bd-940b-4d43-bc26-7cd64f3adcc2\"\nmsg.headers={'Content-Type': 'application/json',\"Authorization\":\"Bearer \"+token,\"ML-Instance-ID\":instance_id}\nmsg.payload={\"input_data\": [{\"fields\": [\"RowNumber\",\"CustomerID\", \"Surname\", \"CreditScore\", \"Location\", \"Gender\", \"Age\", \"Tenure\",\"Balalnce\",\"NumberofProducts\",\"CreditCard\", \"ActiveMember\",\"Salary\"], \"values\": [[rn,id,sn,cs,lo,ge,ag,te,ba,np,cc,am,sa]]}]}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 440,
+        "y": 340,
+        "wires": [
+            [
+                "9ce6be06.df08e"
+            ]
+        ]
+    },
+    {
+        "id": "9ce6be06.df08e",
+        "type": "http request",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://us-south.ml.cloud.ibm.com/v4/deployments/93a9b88c-68da-4798-8f58-c266bed990bb/predictions",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 530,
+        "y": 160,
+        "wires": [
+            [
+                "30d25c03.f97e14",
+                "f6ad3a71.d095c8",
+                "b952accf.16ce4"
+            ]
+        ]
+    },
+    {
+        "id": "ada1d2b0.b4b24",
+        "type": "ui_form",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "label": "",
+        "group": "cbabaea3.3112c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "CustomerID",
+                "value": "id",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Surname",
+                "value": "sn",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Creditscore",
+                "value": "cs",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "Location",
+                "value": "lo",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Gender",
+                "value": "ge",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Age",
+                "value": "ag",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Tenure",
+                "value": "te",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Balance",
+                "value": "ba",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Numofproducts",
+                "value": "np",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "CreditCard",
+                "value": "cc",
+                "type": "number",
+                "required": false,
+                "rows": null
+            },
+            {
+                "label": "ActiveMember",
+                "value": "am",
+                "type": "number",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Salary",
+                "value": "sa",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "id": "",
+            "sn": "",
+            "cs": "",
+            "lo": "",
+            "ge": "",
+            "ag": "",
+            "te": "",
+            "ba": "",
+            "np": "",
+            "cc": "",
+            "am": "",
+            "sa": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 90,
+        "y": 240,
+        "wires": [
+            [
+                "7ad5be0a.4829f"
+            ]
+        ]
+    },
+    {
+        "id": "30d25c03.f97e14",
+        "type": "function",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "func": "msg.payload=msg.payload.predictions[0].values[0][1][0]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 760,
+        "y": 180,
+        "wires": [
+            [
+                "94838814.4c0c98"
+            ]
+        ]
+    },
+    {
+        "id": "94838814.4c0c98",
+        "type": "ui_text",
+        "z": "5e5e8b8b.c37bc4",
+        "group": "cbabaea3.3112c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Prediction :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 970,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f422a00e.75d1d",
+        "type": "ui_text",
+        "z": "5e5e8b8b.c37bc4",
+        "group": "cbabaea3.3112c",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Probability :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 950,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b952accf.16ce4",
+        "type": "function",
+        "z": "5e5e8b8b.c37bc4",
+        "name": "",
+        "func": "msg.payload=msg.payload.predictions[0].values[0][1][1]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 740,
+        "y": 300,
+        "wires": [
+            [
+                "f422a00e.75d1d"
+            ]
+        ]
+    },
+    {
+        "id": "cbabaea3.3112c",
+        "type": "ui_group",
+        "z": "",
+        "name": "Customer Churn ",
+        "tab": "b59f5041.1edff",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "b59f5041.1edff",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
